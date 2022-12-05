@@ -8,14 +8,15 @@ Servo arm;
 
 int speed;
 int arm_angle = 168;
-double tolerance = 1;
+double tolerance = 10;
 int offset = 500;
 
-double d = 1804/8; // bit delay of first ring, 225.5
+//double d = 1804/8; // bit delay of first ring, 225.5
+double d = 1500/8; // bit delay of first ring
 int r = 2.73; // radius of first ring
 int bit_rings[] = {8, 14, 20, 26, 32, 38, 44};
 double rotations[] = {7, 4.5, 3.5, 4, 4.5, 5.5, 0};
-double bit_delays[] = {d, 8*d/14, 8*d/20, 8*d/26, 8*d/32, 8*d/38, 8*d/44}; // each ring takes 8*d
+double bit_delays[] = {d, 8*d/14, 8*d/20, 8*d/26, 1.1*8*d/32, 1.1*8*d/38, 8*d/44}; // each ring takes 8*d
 int ring = 0;
 int bit_num = 0;
 
@@ -59,7 +60,7 @@ void loop() {
 //        Serial.println("voltage: " + String(h_voltage)); 
         if(h_voltage > offset + tolerance) { bit_val = 1; }
         else if(h_voltage < offset - tolerance) { bit_val = 0; }
-        else { bit_val = 0; } // freespace as 0
+        else { bit_val = 1; } // freespace as 1
   
         bit_avg[i] += bit_val;
         delayTime += bit_delays[ring];
@@ -83,7 +84,7 @@ void loop() {
 
     memset(bit_avg,0,sizeof(bit_avg)); // reset bit_avg to 0s
     
-    Serial.println("Ring " + String(ring) + "delay time: " + String(delayTime));
+    Serial.println("Ring " + String(ring) + " delay time: " + String(delayTime));
 //    analogWrite(motorPin, 0);
 
     // update arm for next ring
