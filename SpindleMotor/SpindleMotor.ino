@@ -7,24 +7,24 @@ int servoPin = 5;
 Servo arm;
 
 int speed;
-int arm_angle = 167;
+int arm_angle = 169;
 double tolerance = 10;
-int offset = 450;
+int offset = 255;
 
 //double d = 1804/8; // bit delay of first ring, 225.5
-double d = 2550/8; // bit delay of first ring
+double d = 2260/8; // bit delay of first ring
 int r = 2.73; // radius of first ring
 int bit_rings[] = {8, 14, 20, 26, 32, 38, 44};
-double rotations[] = {7, 4.5, 3.5, 4, 4.5, 5.5, 0};
+double rotations[] = {7, 5.5, 3.5, 4, 4.5, 5.5, 0};
 double bit_delays[] = {d, 8*d/14, 8*d/20, 8*d/26, 1.1*8*d/32, 1.1*8*d/38, 8*d/44}; // each ring takes 8*d
 int ring = 0;
 int bit_num = 0;
 
 int bits[182] = {};
 int bit_avg[44] = {}; // init to 0, temporarily hold ring reading before average
-double volts[182] = {};
-double volt_avg[44] = {}; // temp hold volt avg
-int num_rev = 3; // num of cycles to take avg of
+int volts[182] = {};
+int volt_avg[44] = {}; // temp hold volt avg
+int num_rev = 5; // num of cycles to take avg of
 int bit_val;
 
 void jostleMotor(){
@@ -83,8 +83,10 @@ void loop() {
     Serial.println("Writing ring " + String(ring) + " to bits array.");
 
     for(int i=0; i<bit_rings[ring]; i++){
-      int b_avg = bit_avg[i] >= (num_rev-1)/2 ? 1 : 0;
-      double v_avg = volt_avg[i]/num_rev;
+      int b_avg;
+      if(ring <= 2 || ring == 6){ b_avg = bit_avg[i] >= (num_rev-1)/2 ? 1 : 0; }
+      else { b_avg = bit_avg[i] >= (num_rev+1)/2 ? 1 : 0; }
+      int v_avg = volt_avg[i]/num_rev;
       bits[bit_num] = b_avg;
       volts[bit_num] = v_avg;
       
@@ -93,7 +95,7 @@ void loop() {
     }
 
     memset(bit_avg,0,sizeof(bit_avg)); // reset bit_avg to 0s
-    memset(volt_avg,0,sizeof(bit_avg)); // reset bit_avg to 0s
+    memset(volt_avg,0,sizeof(volt_avg)); // reset volt_avg to 0s
     
     Serial.println("Ring " + String(ring) + " delay time: " + String(delayTime));
 //    analogWrite(motorPin, 0);

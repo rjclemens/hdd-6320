@@ -29,24 +29,25 @@ def split_to_rings(bits):
 
 
 def argmax(arr):
-    print(max(arr))
     return arr.index(max(arr))
+
+
+def argmin(arr):
+    print(min(arr))
+    return arr.index(min(arr))
 
 
 def rotate_to_start(bit_list, volt_list):
     for i, volts in enumerate(volt_list):
-        ind_max_volts = argmax(volts)  # find max index
+        ind_min_volts = argmin(volts)  # find min index
 
         # find index of starting ring element
-        st_index = ind_max_volts - diff[i]
+        st_index = ind_min_volts - diff[i]
         st_index = st_index % bits_per_ring[i]  # make index positive
-        print(st_index)
 
         # rotate st_index to beginning
         bit_list[i] = rotate(bit_list[i], st_index)
         volts = rotate(volts, st_index)
-        # print(bits[i])
-        # print(volts)
 
     return bit_list
 
@@ -65,12 +66,12 @@ with open('out.txt', 'r') as f:
 
 with open('volt.txt', 'r') as f:
     volts = list(map(float, f.read().split()))
+    avg_voltage = sum(volts)/182
 
 bit_list = split_to_rings(bits)
 volt_list = split_to_rings(volts)
 
-print(bit_list)
-print(volt_list)
+print("Avg Voltage: ", avg_voltage)
 
 bit_list = rotate_to_start(bit_list, volt_list)
 bits_st = collapse(bit_list)
@@ -81,7 +82,7 @@ print(bits_st)
 white_row = np.zeros(ROWS)  # white pixel count per row
 
 pxl_list = list(map(lambda x: [0, 0, 0] if x ==
-                0 else [255, 255, 255], bits_st))
+                1 else [255, 255, 255], bits_st))
 
 pxls = np.zeros((ROWS, COLS, 3), dtype=np.uint8)
 
@@ -94,4 +95,4 @@ for r in range(ROWS):
 
 print(white_row)
 new_image = Image.fromarray(pxls)
-new_image.save('ard_out16.png')
+new_image.save('ard_out23.png')
