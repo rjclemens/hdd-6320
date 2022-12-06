@@ -82,7 +82,7 @@ print(bits_st)
 white_row = np.zeros(ROWS)  # white pixel count per row
 
 pxl_list = list(map(lambda x: [0, 0, 0] if x ==
-                1 else [255, 255, 255], bits_st))
+                0 else [255, 255, 255], bits_st))
 
 pxls = np.zeros((ROWS, COLS, 3), dtype=np.uint8)
 
@@ -95,4 +95,4 @@ for r in range(ROWS):
 
 print(white_row)
 new_image = Image.fromarray(pxls)
-new_image.save('ard_out23.png')
+new_image.save('ard_output/ard_out23.png')
